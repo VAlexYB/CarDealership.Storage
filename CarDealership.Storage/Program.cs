@@ -6,6 +6,20 @@ using Microsoft.Extensions.Options;
 using Minio;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5229, listenOptions =>
+    {
+        listenOptions.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1;
+    });
+
+    options.ListenAnyIP(7292, listenOptions =>
+    {
+        listenOptions.Protocols = Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http2;
+    });
+});
+
 var services = builder.Services;
 
 services.Configure<MinioConnectionOptions>(builder.Configuration.GetSection(nameof(MinioConnectionOptions)));
